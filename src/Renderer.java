@@ -173,8 +173,13 @@ public class Renderer extends GLCanvas implements GLEventListener {
     private void showConsole() {
 	gl.glColor3f(0, 1f, 0);
 	String lines[] = interpreter.processInput();
-	for (int i = 0; i < lines.length; i++) {
-	    setText(lines[i], -5.f, 3.f - 0.2f * i);
+	int start, end;
+	start = 0;
+	end = lines.length;
+	if (end > 30)
+	    start = end - 30;
+	for (int i = start; i < end; i++) {
+	    setText(lines[i], -5.f, 3.f - 0.2f * (i%30));
 	}
     }
 
