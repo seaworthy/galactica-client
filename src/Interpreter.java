@@ -14,14 +14,12 @@ public class Interpreter {
     public Interpreter() {
 
     }
-
     public String[] processInput() {
 	lines = consoleInput.split("\\r?\\n");
 	if (lines.length > 1)
 	    processLast();
 	return lines;
     }
-
     public void processLast() {
 	// Connect
 	if (lines[lines.length - 2].equals("> connect")
@@ -66,10 +64,18 @@ public class Interpreter {
 	    consoleInput += "> ";
 	}
 	// Remove
-	// TODO Fix clear console
 	if (lines[lines.length - 2].matches("> remove ([0-9]+)")
 		&& lines[lines.length - 1].equals("> ")) {
 	    removeObject(lines[lines.length - 2].split("\\s+"));
+	    consoleInput += "	ok\n";
+	    consoleInput += "> ";
+	}
+	// Change color
+	// TODO Fix clear console
+	if (lines[lines.length - 2].matches("> change ([0-9]+) ([0-9]+),([0-9]+),([0-9]+)")
+		&& lines[lines.length - 1].equals("> ")) {
+	    changeColor(lines[lines.length - 2].split("\\s+"));
+	    //removeObject(lines[lines.length - 2].split("\\s+"));
 	    consoleInput += "	ok\n";
 	    consoleInput += "> ";
 	}
@@ -83,11 +89,17 @@ public class Interpreter {
 		Integer.parseInt(arg2[1]), Integer.parseInt(arg2[2]));
 
 	manager.addObject(origin, color);
-	System.out.println("Object added!");
     }
     public void removeObject(String[] args) {
 	manager.removeObject(Integer.parseInt(args[2]));
-	System.out.println("Object removed!");
+    }
+    public void changeColor(String[] args) {
+	Integer hash = Integer.parseInt(args[2]);
+	String arg1[] = args[3].split(",");// Color
+	Point3i color = new Point3i(Integer.parseInt(arg1[0]),
+		Integer.parseInt(arg1[1]), Integer.parseInt(arg1[2]));
+	System.out.println(hash);
+	manager.changeObjectColor(hash, color);
     }
     public void listObjects() {
 	for (SceneObject object : manager.objects) {
@@ -95,7 +107,6 @@ public class Interpreter {
 	}
 	consoleInput += "> ";
     }
-
     public float[] convertPoint3fArray(ArrayList<Point3f> vertices) {
 	float[] data = new float[vertices.size() * 3];
 	int i = 0;
@@ -107,7 +118,6 @@ public class Interpreter {
 	}
 	return data;
     }
-
     public int[] convertPoint3iArray(ArrayList<Point3i> indices) {
 	int[] data = new int[indices.size() * 3];
 	int i = 0;
@@ -119,15 +129,4 @@ public class Interpreter {
 	}
 	return data;
     }
-
-    public float[] generateColorData(Point3i color, int length) {
-	float[] data = new float[length];
-	for (int i = 0; i < length; i = i + 3) {
-	    data[i] = color.x / 255.0f;
-	    data[i + 1] = color.y / 255.0f;
-	    data[i + 2] = color.z / 255.0f;
-	}
-	return data;
-    }
-    // ////////////////////////////
 }

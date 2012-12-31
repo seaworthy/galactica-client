@@ -15,15 +15,16 @@ public class SceneObject {
     public SceneObject(float[] arg0, int[] arg1, Point3i arg2) {
 	vertices = arg0;
 	indices = arg1;
-	colors = flushColor(arg2, arg0.length);
+	flushColor(arg2);
     }
-    public float[] flushColor(Point3i color, int length) {
+    public void flushColor(Point3i color) {
+	int length = vertices.length;
 	float[] data = new float[length];
 	for (int i = 0; i < length; i = i + 3) {
 	    data[i] = color.x / 255.0f;
 	    data[i + 1] = color.y / 255.0f;
 	    data[i + 2] = color.z / 255.0f;
 	}
-	return data;
+	colors = data;
     }
 }
