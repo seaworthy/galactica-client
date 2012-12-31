@@ -65,8 +65,15 @@ public class Interpreter {
 	    consoleInput += "	ok\n";
 	    consoleInput += "> ";
 	}
+	// Remove
+	// TODO Fix clear console
+	if (lines[lines.length - 2].matches("> remove ([0-9]+)")
+		&& lines[lines.length - 1].equals("> ")) {
+	    removeObject(lines[lines.length - 2].split("\\s+"));
+	    consoleInput += "	ok\n";
+	    consoleInput += "> ";
+	}
     }
-
     public void addObject(String[] args) {
 	String arg1[] = args[3].split(",");// Origin
 	String arg2[] = args[4].split(",");// Color
@@ -78,7 +85,10 @@ public class Interpreter {
 	manager.addObject(origin, color);
 	System.out.println("Object added!");
     }
-
+    public void removeObject(String[] args) {
+	manager.removeObject(Integer.parseInt(args[2]));
+	System.out.println("Object removed!");
+    }
     public void listObjects() {
 	for (SceneObject object : manager.objects) {
 	    consoleInput += "	" + object.hashCode() + "\n";
