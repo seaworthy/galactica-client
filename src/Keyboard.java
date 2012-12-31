@@ -1,18 +1,16 @@
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 
-
 public class Keyboard implements KeyListener {
-    //public List<String> consoleOutput = new ArrayList<String>();;
     public String message = "> ";
-    //Scene actions
+    // Scene actions
     public boolean showViewVolume = false;
-    
-    //Object actions
+
+    // Object actions
     public boolean clearSelection = false;
     public boolean deleteSelected = false;
 
-    //Camera controls
+    // Camera controls
     public boolean resetView = false;
     public boolean zoomOut = false;
     public boolean zoomIn = false;
@@ -21,13 +19,9 @@ public class Keyboard implements KeyListener {
     public boolean panUp = false;
     public boolean panDown = false;
 
-    //GUI
-    public boolean showHelp = false;
-    public boolean showConsole = false;
-    public boolean showDefault = true;
-    //public boolean removeLastCharacter = false;
+    // GUI
+    int window = 0;
 
-       
     public Keyboard() {
 	System.out.println("KeyListener attached");
     }
@@ -35,9 +29,76 @@ public class Keyboard implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
 	System.out.println("Key pressed: " + e.getKeyCode());
-	if (showConsole) {
-	    /* TODO Add carriage return when console toggled off */
-	    //Reserve '~' and 'DEL' keys for other functions
+	int activeWindow = window;
+	// Default
+	if (window == 0) {
+	    if (e.getKeyCode() == 192) { // ~
+		activeWindow = 1;
+	    }
+	    if (e.getKeyCode() == 27) { // ESC
+		activeWindow = 2;
+	    }
+
+	    if (e.getKeyCode() == 32) { // 0 (Reset view)
+		resetView = true;
+		message += "View reset\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 90) { // Z (Zoom-out begin)
+		zoomOut = true;
+		message += "Zooming out\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 88) { // X (Zoom-in begin)
+		zoomIn = true;
+		message += "Zooming in\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 8) { // DEL
+		deleteSelected = true;
+		message += "Selected object(s) deleted\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 48) { // 0
+		clearSelection = true;
+		message += "Selection cleared\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 37) { // Left
+		panLeft = true;
+		message += "Rotating left\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 39) { // Right
+		panRight = true;
+		message += "Rotating right\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 38) { // UP
+		panUp = true;
+		message += "Panning up\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 40) { // Down
+		panDown = true;
+		message += "Panning down\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 45) { // -
+		boolean enabled;
+		enabled = showViewVolume;
+		if (enabled)
+		    showViewVolume = false;
+		else
+		    showViewVolume = true;
+	    }
+	}
+	// Console
+	if (window == 1) {
+	    // Reserve '~' and 'DEL' keys for other functions
+	    if (e.getKeyCode() == 192) { // ~
+		activeWindow = 0;
+	    }
 	    if (e.getKeyCode() != 192 && e.getKeyCode() != 8) {
 		message += e.getKeyChar();
 	    }
@@ -47,90 +108,14 @@ public class Keyboard implements KeyListener {
 	    if (e.getKeyCode() == 10) {
 		message += "> ";
 	    }
-
-	} else {
-	    // 0 (Reset view)
-	    if (e.getKeyCode() == 32) {
-		resetView = true;
-		message += "View reset\n";
-		message += "> ";
-	    }
-	    // Z (Zoom-out begin)
-	    if (e.getKeyCode() == 90) {
-		zoomOut = true;
-		message += "Zooming out\n";
-		message += "> ";
-	    }
-	    // X (Zoom-in begin)
-	    if (e.getKeyCode() == 88) {
-		zoomIn = true;
-		message += "Zooming in\n";
-		message += "> ";
-	    }
-	    // DEL
-	    if (e.getKeyCode() == 8) {
-		deleteSelected = true;
-		message += "Selected object(s) deleted\n";
-		message += "> ";
-	    }
-	    // 0
-	    if (e.getKeyCode() == 48) {
-		clearSelection = true;
-		message += "Selection cleared\n";
-		message += "> ";
-	    }
-	    // Left
-	    if (e.getKeyCode() == 37) {
-		panLeft = true;
-		message += "Rotating left\n";
-		message += "> ";
-	    }
-	    // Right
-	    if (e.getKeyCode() == 39) {
-		panRight = true;
-		message += "Rotating right\n";
-		message += "> ";
-	    }
-	    // UP
-	    if (e.getKeyCode() == 38) {
-		panUp = true;
-		message += "Panning up\n";
-		message += "> ";
-	    }
-	    // Down
-	    if (e.getKeyCode() == 40) {
-		panDown = true;
-		message += "Panning down\n";
-		message += "> ";
-	    }
-	    // ESC
-	    if (e.getKeyCode() == 27) {
-		boolean enabled;
-		enabled = showHelp;
-		if (enabled)
-		    showHelp = false;
-		else
-		    showHelp = true;
-	    }
-	    // -
-	    if (e.getKeyCode() == 45) {
-		boolean enabled;
-		enabled = showViewVolume;
-		if (enabled)
-		    showViewVolume = false;
-		else
-		    showViewVolume = true;
+	}
+	// Help
+	if (window == 2) {
+	    if (e.getKeyCode() == 27) { // ESC
+		activeWindow = 0;
 	    }
 	}
-	// ~
-	if (e.getKeyCode() == 192) {
-	    boolean enabled;
-	    enabled = showConsole;
-	    if (enabled)
-		showConsole = false;
-	    else
-		showConsole = true;
-	}
+	window = activeWindow;
     }
 
     @Override

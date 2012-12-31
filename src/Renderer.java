@@ -109,12 +109,12 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	gui.cameraAngleInYZ = cameraAngleInYZ;
 	gui.cameraAngleInXZ = cameraAngleInXZ;
 	
-	if (keyboard.showDefault)
+	if (keyboard.window == 0)
 	    gui.showDefault(scene.objects.size(), lastObject, scene.selected);
-	if (keyboard.showHelp)
-	    gui.showHelp();
-	if (keyboard.showConsole) 
+	if (keyboard.window == 1) 
 	    gui.showConsole(interpreter.processInput());
+	if (keyboard.window == 2)
+	    gui.showHelp();
 
 	if (mouse.point != null) {
 	    userPickAt(mouse.point.getX(), mouse.point.getY());
