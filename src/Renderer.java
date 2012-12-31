@@ -90,7 +90,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
     @Override
     public void display(GLAutoDrawable drawable) {
 	interpreter.consoleInput = keyboard.message;
-	//keyboard.message = "";
+	// keyboard.message = "";
 	processCommands();
 
 	gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -113,7 +113,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	scene.make(gl, GL_RENDER);
 	scene.objects.addAll(interpreter.objects);
 	interpreter.objects.clear();
-	//scene.sceneObjectList.addAll(new SceneObject());
+	// scene.sceneObjectList.addAll(new SceneObject());
 	// scene.add
 	// scene.change
 	// scene.update
@@ -151,8 +151,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	} else {
 	    gl.glColor3f(0, 1f, 0);
 	    setText("# of scene objects: "
-		    + Integer.toString(scene.objects.size()), -5.f,
-		    3.f);
+		    + Integer.toString(scene.objects.size()), -5.f, 3.f);
 	    setText("Selected objects: " + scene.selected, -5.f, 2.8f);
 	    if (lastObject != null) {
 		setText("Last selected object: " + Integer.toString(lastObject),
@@ -164,11 +163,6 @@ public class Renderer extends GLCanvas implements GLEventListener {
 		    + Float.toString(cameraAngleInXZ), -5.f, -2.8f);
 	    setText("Pan Angle (Altitude): " + Float.toString(cameraAngleInYZ),
 		    -5.f, -3.0f);
-
-	    // gl.glColor3f(1.f, 1.f, 0);
-	    // if (keyboard.text != null) {
-	    // setText(keyboard.text, -5.f, -2.4f);
-	    // }
 	}
     }
 
@@ -178,10 +172,13 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	int start, end;
 	start = 0;
 	end = lines.length;
+	// Input on the last line of console
 	if (end > 30)
 	    start = end - 30;
+	int j = 0;
 	for (int i = start; i < end; i++) {
-	    setText(lines[i], -5.f, 3.f - 0.2f * (i%30));
+	    setText(lines[i], -5.f, 3.f - 0.2f * (j));
+	    j += 1;
 	}
     }
 
