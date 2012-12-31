@@ -24,7 +24,8 @@ public class Keyboard implements KeyListener {
     //GUI
     public boolean showHelp = false;
     public boolean showConsole = false;
-    public boolean removeLastCharacter = false;
+    public boolean showDefault = true;
+    //public boolean removeLastCharacter = false;
 
        
     public Keyboard() {

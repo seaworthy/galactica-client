@@ -36,7 +36,7 @@ public class Interpreter {
 	    consoleInput += "help\n";
 	    consoleInput += "   connect\n";
 	    consoleInput += "   clear\n";
-	    consoleInput += "   add\n";
+	    consoleInput += "   add shape x,y,z R,G,B\n";
 	    consoleInput += "   remove\n";
 	    consoleInput += "   change\n";
 	    consoleInput += "   load\n";
@@ -44,6 +44,7 @@ public class Interpreter {
 	    consoleInput += "> ";
 	}
 	// Clear console
+	// TODO Fix clear console
 	if (lines[lines.length - 2].equals("> clear")
 		&& lines[lines.length - 1].equals("> ")) {
 	    consoleInput += "	ok\n";

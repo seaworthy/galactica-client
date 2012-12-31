@@ -51,9 +51,6 @@ public class Scene {
 	    objects.add(makeObject(new Point3f(0, 0, 4.f * i), new Point3i(0, 0, 255)));
 	for (int i = 1; i < 5; i++)
 	    objects.add(makeObject(new Point3f(0, 0, -4.f * i), new Point3i(255, i * 40, 0)));
-	
-	//Add cached objects
-	//sceneObjectList.addAll(cachedObjectList);
     }
 
     public void make(GL2 gl, int mode) {
@@ -105,17 +102,14 @@ public class Scene {
 	gl.glDrawElements(GL.GL_TRIANGLES, 36, GL.GL_UNSIGNED_INT,
 		indicesIntBuffer);
     }
-
+    
     public SceneObject makeObject(Point3f location, Point3i color) {
 	Box box = new Box(2);
 
-	float[] vertices;
-	int[] indices;
+	float[] vertices = convertPoint3fArray(box.vertices);
+	int[] indices = convertPoint3iArray(box.indices);
 
 	SceneObject object = null;
-
-	vertices = convertPoint3fArray(box.vertices);
-	indices = convertPoint3iArray(box.indices);
 
 	object = new SceneObject(vertices, indices, color);
 	object.id = objectId;
