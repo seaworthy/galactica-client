@@ -24,19 +24,27 @@ import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 public class Renderer extends GLCanvas implements GLEventListener {
     GL2 gl;
     GLU glu;
+
+    // Major classes
     Mouse mouse = new Mouse();
     Keyboard keyboard = new Keyboard();
+    Interpreter interpreter = new Interpreter();
+
+    String consoleInput = new String();
+
+    // Object related
     Scene scene = null;
     Integer lastObject = null;
 
+    // Scene related
     float cameraDistance = 128;
     float zoomStep = 1f;
     float cameraAngleInXZ = 0;
     float cameraAngleInYZ = 0;
     float cameraAngleInYX = 0;
-
     float panStep = 1;
 
+    // Memory
     private static final int BUFFER_SIZE = 512;
 
     List<String> shortcutList = Arrays.asList(new String[] {
@@ -64,23 +72,25 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	scene.gl = gl;
 
 	// OLD
-	 gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	 gl.glClearDepth(1.0f);
-	 gl.glEnable(GL_DEPTH_TEST);
-	 gl.glDepthFunc(GL_LEQUAL);
-	 gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-	 gl.glShadeModel(GL_SMOOTH);
+	gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	gl.glClearDepth(1.0f);
+	gl.glEnable(GL_DEPTH_TEST);
+	gl.glDepthFunc(GL_LEQUAL);
+	gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	gl.glShadeModel(GL_SMOOTH);
 
 	// NEW
-//	gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-//	gl.glDepthFunc(GL_LESS);
-//	gl.glEnable(GL_DEPTH_TEST);
-//	gl.glShadeModel(GL_FLAT);
-//	gl.glDepthRange(0.0, 1.0); /* The default z mapping */
+	// gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	// gl.glDepthFunc(GL_LESS);
+	// gl.glEnable(GL_DEPTH_TEST);
+	// gl.glShadeModel(GL_FLAT);
+	// gl.glDepthRange(0.0, 1.0); /* The default z mapping */
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
+	interpreter.consoleInput = keyboard.message;
+	//keyboard.message = "";
 	processCommands();
 
 	gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -96,18 +106,16 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	if (keyboard.showViewVolume)
 	    showViewVolume(-32.0f, 32.0f, -32.0f, 32.0f, -32.0f, 32.0f);
 
-	if (keyboard.interpreter.cachedSceneObject !=null) {
-	    scene.visibleObjectList.add(keyboard.interpreter.cachedSceneObject);
-	    keyboard.interpreter.cachedSceneObject = null;
-	}
+	// if (keyboard.interpreter.cachedSceneObject !=null) {
+	// scene.visibleObjectList.add(keyboard.interpreter.cachedSceneObject);
+	// keyboard.interpreter.cachedSceneObject = null;
+	// }
 	scene.make(gl, GL_RENDER);
-	
 
-	//scene.add
-	//scene.change
-	//scene.update
-	
-	
+	// scene.add
+	// scene.change
+	// scene.update
+
 	if (keyboard.showConsole)
 	    showConsole();
 	else
@@ -117,7 +125,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	    userPickAt(mouse.point.getX(), mouse.point.getY());
 	    mouse.point = null;
 	}
-
+	keyboard.message = interpreter.consoleInput;
 	gl.glFlush();
     }
 
@@ -141,7 +149,8 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	} else {
 	    gl.glColor3f(0, 1f, 0);
 	    setText("# of scene objects: "
-		    + Integer.toString(scene.visibleObjectList.size()), -5.f, 3.f);
+		    + Integer.toString(scene.visibleObjectList.size()), -5.f,
+		    3.f);
 	    setText("Selected objects: " + scene.selectedObjectList, -5.f, 2.8f);
 	    if (lastObject != null) {
 		setText("Last selected object: " + Integer.toString(lastObject),
@@ -154,22 +163,19 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	    setText("Pan Angle (Altitude): " + Float.toString(cameraAngleInYZ),
 		    -5.f, -3.0f);
 
-	    gl.glColor3f(1.f, 1.f, 0);
-	    if (keyboard.text != null) {
-		setText(keyboard.text, -5.f, -2.4f);
-	    }
+	    // gl.glColor3f(1.f, 1.f, 0);
+	    // if (keyboard.text != null) {
+	    // setText(keyboard.text, -5.f, -2.4f);
+	    // }
 	}
     }
 
     private void showConsole() {
 	gl.glColor3f(0, 1f, 0);
-	int i = 0;
-	for (String command : keyboard.consoleOutput) {
-	    setText(command, -5.f, 3.f - 0.2f * i);
-	    i += 1;
+	String lines[] = interpreter.processInput();
+	for (int i = 0; i < lines.length; i++) {
+	    setText(lines[i], -5.f, 3.f - 0.2f * i);
 	}
-	setText(keyboard.command, -5.f, 3.f - 0.2f * i);
-
     }
 
     public void showViewVolume(float x1, float x2, float y1, float y2,

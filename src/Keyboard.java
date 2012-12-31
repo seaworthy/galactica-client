@@ -1,38 +1,32 @@
-
-import java.util.ArrayList;
-import java.util.List;
-
-import scene.SceneObject;
-
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 
 
 public class Keyboard implements KeyListener {
-    public List<String> consoleOutput = new ArrayList<String>();;
+    //public List<String> consoleOutput = new ArrayList<String>();;
+    public String message = "> ";
+    //Scene actions
+    public boolean showViewVolume = false;
+    
+    //Object actions
+    public boolean clearSelection = false;
+    public boolean deleteSelected = false;
+
+    //Camera controls
     public boolean resetView = false;
     public boolean zoomOut = false;
     public boolean zoomIn = false;
-
-    public boolean clearSelection = false;
-    public boolean deleteSelected = false;
-    public boolean showHelp = false;
-    public boolean showConsole = false;
-    public boolean removeLastCharacter = false;
-    public boolean showViewVolume = false;
-
     public boolean panLeft = false;
     public boolean panRight = false;
     public boolean panUp = false;
     public boolean panDown = false;
 
-    public String command = "> ";
-    public String text = null;
-   
-    public Interpreter interpreter = new Interpreter();
-    
-    public ArrayList<SceneObject> cachedSceneObjectList = new ArrayList<SceneObject>();
+    //GUI
+    public boolean showHelp = false;
+    public boolean showConsole = false;
+    public boolean removeLastCharacter = false;
 
+       
     public Keyboard() {
 	System.out.println("KeyListener attached");
     }
@@ -41,65 +35,63 @@ public class Keyboard implements KeyListener {
     public void keyPressed(KeyEvent e) {
 	System.out.println("Key pressed: " + e.getKeyCode());
 	if (showConsole) {
-	    if (e.getKeyCode() == 8 && command.length() > 2)
-		command = command.substring(0, command.length() - 1);
-	    else if (e.getKeyCode() != 192)
-		command += e.getKeyChar();
-
-	    if (e.getKeyCode() == 10) {
-		command = command.substring(2, command.length() - 1);
-		consoleOutput.add("user$ " + command);
-		
-		cachedSceneObjectList.add(interpreter.cachedSceneObject);
-
-		consoleOutput.addAll(interpreter.processCommand(command));
-		command = "> ";
+	    /* TODO Add carriage return when console toggled off */
+	    //Reserve '~' and 'DEL' keys for other functions
+	    if (e.getKeyCode() != 192 && e.getKeyCode() != 8) {
+		message += e.getKeyChar();
 	    }
+	    if (e.getKeyCode() == 8 && message.length() > 0) {
+		message = message.substring(0, message.length() - 1);
+	    }
+	    if (e.getKeyCode() == 10) {
+		message += "> ";
+	    }
+
 	} else {
 	    // 0 (Reset view)
 	    if (e.getKeyCode() == 32) {
 		resetView = true;
-		text = "View reset";
+		message += "View reset\n";
 	    }
 	    // Z (Zoom-out begin)
 	    if (e.getKeyCode() == 90) {
 		zoomOut = true;
-		text = "Zooming out";
+		message += "Zooming out\n";
 	    }
 	    // X (Zoom-in begin)
 	    if (e.getKeyCode() == 88) {
 		zoomIn = true;
-		text = "Zooming in";
+		message += "Zooming in\n";
 	    }
 	    // DEL
 	    if (e.getKeyCode() == 8) {
 		deleteSelected = true;
-		text = "Selected object(s) deleted";
+		message += "Selected object(s) deleted\n";
 	    }
 	    // 0
 	    if (e.getKeyCode() == 48) {
 		clearSelection = true;
-		text = "Selection cleared";
+		message += "Selection cleared\n";
 	    }
 	    // Left
 	    if (e.getKeyCode() == 37) {
 		panLeft = true;
-		text = "Rotating left";
+		message += "Rotating left\n";
 	    }
 	    // Right
 	    if (e.getKeyCode() == 39) {
 		panRight = true;
-		text = "Rotating right";
+		message += "Rotating right\n";
 	    }
 	    // UP
 	    if (e.getKeyCode() == 38) {
 		panUp = true;
-		text = "Panning up";
+		message += "Panning up\n";
 	    }
 	    // Down
 	    if (e.getKeyCode() == 40) {
 		panDown = true;
-		text = "Panning down";
+		message += "Panning down\n";
 	    }
 	    // ESC
 	    if (e.getKeyCode() == 27) {

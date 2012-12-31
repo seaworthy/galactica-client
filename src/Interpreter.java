@@ -9,58 +9,61 @@ import scene.SceneObject;
 
 public class Interpreter {
     public SceneObject cachedSceneObject = null;
+    public String consoleInput = new String();
+    public String[] lines = null;
 
     public Interpreter() {
 
+    }
+
+    public String[] processInput() {
+	//consoleInput = string;
+	lines = consoleInput.split("\\r?\\n");
+	if (lines.length > 1)
+	    processLast();
+	return lines;
+    }
+
+    public void processLast() {
+	//Connect
+	if (lines[lines.length - 2].equals("> connect")
+		&& lines[lines.length - 1].equals("> "))
+	    System.out.println("PASS");
+	//Help
+	if (lines[lines.length - 2].equals("> help")
+		&& lines[lines.length - 1].equals("> ")) {
+	    consoleInput += "help\n";
+	    consoleInput += "   connect\n";
+	    consoleInput += "   clear\n";
+	    consoleInput += "   add\n";
+	    consoleInput += "   remove\n";
+	    consoleInput += "   change\n";
+	    consoleInput += "   load\n";
+	    consoleInput += "   save\n";
+	    consoleInput += "> ";
+	}
+	//Clear console
+	if (lines[lines.length - 2].equals("> clear")
+		&& lines[lines.length - 1].equals("> ")) {
+	    consoleInput = "> ";
+	}
     }
 
     public List<String> processCommand(String command) {
 	ArrayList<String> messages = new ArrayList<String>();// "invalid command";
 	messages.add("system$ invalid command, try 'help'");
 
-	if (command.matches("connect")) {
-	    messages.remove(0);
-	    messages.add("ok");
-	}
 	if (command.matches("add ([0-9]+) ([0-9]+),([0-9]+),([0-9]+)")) {
 	    messages.remove(0);
 	    Box box = new Box(2);
 
 	    cachedSceneObject = new SceneObject(box.points, box.indices,
-		    generateColorData(new int[] { 255, 255, 0 }, box.points.length));
+		    generateColorData(new int[] { 255, 255, 0 },
+			    box.points.length));
 	    cachedSceneObject.id = 999;
 	    cachedSceneObject.point = new Point3f(8, 8, 8);
 	    messages.add("id: " + cachedSceneObject.id);
 	    messages.add("Object " + cachedSceneObject.hashCode() + " added");
-	}
-	if (command.matches("remove ([0-9]+),([0-9]+),([0-9]+)")) {
-	    messages.remove(0);
-	    messages.add("ok");
-	}
-	if (command.matches("change ([0-9]+),([0-9]+),([0-9]+) ([0-9]+)")) {
-	    messages.remove(0);
-	    messages.add("ok");
-	}
-	if (command.matches("load")) {
-	    messages.remove(0);
-	    messages.add("ok");
-	}
-	if (command.matches("save")) {
-	    messages.remove(0);
-	    messages.add("ok");
-	}
-	if (command.matches("help")) {
-	    messages.remove(0);
-	    messages.add("system$ Available command list");
-	    messages.add("connect");
-	    messages.add("add");
-	    messages.add("remove");
-	    messages.add("change");
-	    messages.add("save");
-	    messages.add("load");
-	    messages.add("clear");
-	    messages.add("help");
-
 	}
 	return messages;
     }
@@ -74,4 +77,5 @@ public class Interpreter {
 	}
 	return data;
     }
+
 }

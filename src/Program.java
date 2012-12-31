@@ -8,7 +8,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 
 @SuppressWarnings("serial")
 public class Program extends JFrame {
-    private static String TITLE = "JOGL 2.0 Setup (GLCanvas)";
+    private static String TITLE = "Galactica Client";
     private static final int CANVAS_WIDTH = 800;
     private static final int CANVAS_HEIGHT = 600;
     private static final int FPS = 60;
