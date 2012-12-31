@@ -52,46 +52,55 @@ public class Keyboard implements KeyListener {
 	    if (e.getKeyCode() == 32) {
 		resetView = true;
 		message += "View reset\n";
+		message += "> ";
 	    }
 	    // Z (Zoom-out begin)
 	    if (e.getKeyCode() == 90) {
 		zoomOut = true;
 		message += "Zooming out\n";
+		message += "> ";
 	    }
 	    // X (Zoom-in begin)
 	    if (e.getKeyCode() == 88) {
 		zoomIn = true;
 		message += "Zooming in\n";
+		message += "> ";
 	    }
 	    // DEL
 	    if (e.getKeyCode() == 8) {
 		deleteSelected = true;
 		message += "Selected object(s) deleted\n";
+		message += "> ";
 	    }
 	    // 0
 	    if (e.getKeyCode() == 48) {
 		clearSelection = true;
 		message += "Selection cleared\n";
+		message += "> ";
 	    }
 	    // Left
 	    if (e.getKeyCode() == 37) {
 		panLeft = true;
 		message += "Rotating left\n";
+		message += "> ";
 	    }
 	    // Right
 	    if (e.getKeyCode() == 39) {
 		panRight = true;
 		message += "Rotating right\n";
+		message += "> ";
 	    }
 	    // UP
 	    if (e.getKeyCode() == 38) {
 		panUp = true;
 		message += "Panning up\n";
+		message += "> ";
 	    }
 	    // Down
 	    if (e.getKeyCode() == 40) {
 		panDown = true;
 		message += "Panning down\n";
+		message += "> ";
 	    }
 	    // ESC
 	    if (e.getKeyCode() == 27) {

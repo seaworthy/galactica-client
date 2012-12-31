@@ -111,7 +111,9 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	// keyboard.interpreter.cachedSceneObject = null;
 	// }
 	scene.make(gl, GL_RENDER);
-
+	scene.objects.addAll(interpreter.objects);
+	interpreter.objects.clear();
+	//scene.sceneObjectList.addAll(new SceneObject());
 	// scene.add
 	// scene.change
 	// scene.update
@@ -149,9 +151,9 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	} else {
 	    gl.glColor3f(0, 1f, 0);
 	    setText("# of scene objects: "
-		    + Integer.toString(scene.visibleObjectList.size()), -5.f,
+		    + Integer.toString(scene.objects.size()), -5.f,
 		    3.f);
-	    setText("Selected objects: " + scene.selectedObjectList, -5.f, 2.8f);
+	    setText("Selected objects: " + scene.selected, -5.f, 2.8f);
 	    if (lastObject != null) {
 		setText("Last selected object: " + Integer.toString(lastObject),
 			-5.f, 2.6f);
@@ -264,14 +266,14 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	}
 
 	if (keyboard.clearSelection) {
-	    scene.selectedObjectList.clear();
+	    scene.selected.clear();
 	    keyboard.clearSelection = false;
 	}
 	if (keyboard.deleteSelected) {
-	    for (Integer hash : scene.selectedObjectList) {
+	    for (Integer hash : scene.selected) {
 		scene.removeObject(hash);
 	    }
-	    scene.selectedObjectList.clear();
+	    scene.selected.clear();
 	    keyboard.deleteSelected = false;
 	}
     }
@@ -333,10 +335,10 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	    for (int j = 0; j < names; j++) {
 		System.out.println("" + buffer[offset]);
 		lastObject = buffer[offset];
-		if (scene.selectedObjectList.contains(lastObject))
-		    scene.selectedObjectList.remove(lastObject);
+		if (scene.selected.contains(lastObject))
+		    scene.selected.remove(lastObject);
 		else
-		    scene.selectedObjectList.add(lastObject);
+		    scene.selected.add(lastObject);
 		offset++;
 	    }
 	    System.out.println();
