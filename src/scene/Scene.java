@@ -48,9 +48,9 @@ public class Scene {
 	for (int i = 1; i < 5; i++)
 	    addObject(new Point3f(0, -4.f * i, 0), new Point3i(255, i * 40, 0));
 	for (int i = 1; i < 5; i++)
-	    addObject(new Point3f(0, 0, 4.f *i), new Point3i(0, 0, 255));
+	    addObject(new Point3f(0, 0, 4.f * i), new Point3i(0, 0, 255));
 	for (int i = 1; i < 5; i++)
-	    addObject(new Point3f(0, 0, -4.f *i), new Point3i(255, i *40, 0));
+	    addObject(new Point3f(0, 0, -4.f * i), new Point3i(255, i * 40, 0));
     }
 
     public void make(GL2 gl, int mode) {
@@ -112,16 +112,16 @@ public class Scene {
     public void addObject(Point3f location, Point3i color) {
 	Box box = new Box(2);
 
-	float[] points, colors;
+	float[] vertices, colors;
 	int[] indices;
 
 	SceneObject object = null;
 
-	points = box.points;
+	vertices = convertPoint3fArray(box.vertices);
 	indices = box.indices;
-	colors = generateColorData(color, points.length);
+	colors = generateColorData(color, vertices.length);
 
-	object = new SceneObject(points, indices, colors);
+	object = new SceneObject(vertices, indices, colors);
 	object.id = objectId;
 	object.point = location;
 
@@ -139,6 +139,18 @@ public class Scene {
 	visibleObjectList.remove(index);
     }
 
+    public float[] convertPoint3fArray(ArrayList<Point3f> vertices) {
+	float[] data = new float[vertices.size() * 3];
+	int i = 0;
+	for (Point3f vertex : vertices) {
+	    data[i] = vertex.x;
+	    data[i + 1] = vertex.y;
+	    data[i + 2] = vertex.z;
+	    i += 3;
+	}
+	return data;
+    }
+
     public float[] generateColorData(Point3i color, int length) {
 	// TODO Data into ArrayList<Point3f>
 	float[] data = new float[length];
@@ -150,4 +162,3 @@ public class Scene {
 	return data;
     }
 }
-

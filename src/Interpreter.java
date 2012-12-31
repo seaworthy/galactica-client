@@ -53,18 +53,18 @@ public class Interpreter {
 	ArrayList<String> messages = new ArrayList<String>();// "invalid command";
 	messages.add("system$ invalid command, try 'help'");
 
-	if (command.matches("add ([0-9]+) ([0-9]+),([0-9]+),([0-9]+)")) {
-	    messages.remove(0);
-	    Box box = new Box(2);
-
-	    cachedSceneObject = new SceneObject(box.points, box.indices,
-		    generateColorData(new int[] { 255, 255, 0 },
-			    box.points.length));
-	    cachedSceneObject.id = 999;
-	    cachedSceneObject.point = new Point3f(8, 8, 8);
-	    messages.add("id: " + cachedSceneObject.id);
-	    messages.add("Object " + cachedSceneObject.hashCode() + " added");
-	}
+//	if (command.matches("add ([0-9]+) ([0-9]+),([0-9]+),([0-9]+)")) {
+//	    messages.remove(0);
+//	    Box box = new Box(2);
+//
+//	    cachedSceneObject = new SceneObject(box.points, box.indices,
+//		    generateColorData(new int[] { 255, 255, 0 },
+//			    box.points.length));
+//	    cachedSceneObject.id = 999;
+//	    cachedSceneObject.point = new Point3f(8, 8, 8);
+//	    messages.add("id: " + cachedSceneObject.id);
+//	    messages.add("Object " + cachedSceneObject.hashCode() + " added");
+//	}
 	return messages;
     }
 
