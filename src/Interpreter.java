@@ -51,26 +51,29 @@ public class Interpreter {
 	}
 	// Add object
 	if (lines[lines.length - 2]
-		.matches("> add ([0-9]+) ([0-9]+),([0-9]+),([0-9]+)")
+		.matches("> add ([0-9]+) ([0-9]+),([0-9]+),([0-9]+) ([0-9]+),([0-9]+),([0-9]+)")
 		&& lines[lines.length - 1].equals("> ")) {
-	    
-	    String parts[] = lines[lines.length - 2].split("\\s+");
-	    parts = parts[3].split(",");
-	    float x = Float.parseFloat(parts[0]);
-	    float y = Float.parseFloat(parts[1]);
-	    float z = Float.parseFloat(parts[2]);
-	    
-	    addObject(new Point3f(x, y, z), new Point3i(255, 0, 0));
+
+	    String args[] = lines[lines.length - 2].split("\\s+");
+	    String arg1[] = args[3].split(",");// Origin
+	    String arg2[] = args[4].split(",");// Color
+	    Point3f origin = new Point3f(Float.parseFloat(arg1[0]),
+		    Float.parseFloat(arg1[1]), Float.parseFloat(arg1[2]));
+	    Point3i color = new Point3i(Integer.parseInt(arg2[0]),
+		    Integer.parseInt(arg2[1]), Integer.parseInt(arg2[2]));
+
+	    addObject(origin, color);
 	    consoleInput += "	ok\n";
 	    consoleInput += "> ";
 	}
     }
+
     // EXPERIMENTAL BLOCK
     public void addObject(Point3f location, Point3i color) {
-	//Load primitive to use
-	Box box = new Box(2);
+	// Load primitive to use
+	Box box = new Box(10);
 
-	//Collect vertex, index, color, data
+	// Collect vertex, index, color, data
 	float[] vertices;
 	int[] indices;
 
