@@ -5,12 +5,15 @@ import javax.vecmath.Point3i;
 
 import objects.Box;
 
+import scene.SceneObjectManager;
 import scene.SceneObject;
 
 public class Interpreter {
+    public SceneObjectManager manager = new SceneObjectManager();
     public ArrayList<SceneObject> objects = new ArrayList<SceneObject>();
     public String consoleInput = new String();
     public String[] lines = null;
+    
 
     public Interpreter() {
 
@@ -63,6 +66,7 @@ public class Interpreter {
 	    Point3i color = new Point3i(Integer.parseInt(arg2[0]),
 		    Integer.parseInt(arg2[1]), Integer.parseInt(arg2[2]));
 
+	    manager.addObject(origin, color);
 	    addObject(origin, color);
 	    consoleInput += "	ok\n";
 	    consoleInput += "> ";

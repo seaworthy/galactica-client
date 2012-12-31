@@ -102,7 +102,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	    showViewVolume(-32.0f, 32.0f, -32.0f, 32.0f, -32.0f, 32.0f);
 
 	scene.make(gl, GL_RENDER);
-	scene.objects.addAll(interpreter.objects);
+	scene.manager.objects.addAll(interpreter.objects);	
 	interpreter.objects.clear();
 
 	gui.cameraDistance = cameraDistance;
@@ -110,7 +110,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	gui.cameraAngleInXZ = cameraAngleInXZ;
 	
 	if (keyboard.window == 0)
-	    gui.showDefault(scene.objects.size(), lastObject, scene.selected);
+	    gui.showDefault(scene.manager.objects.size(), lastObject, scene.selected);
 	if (keyboard.window == 1) 
 	    gui.showConsole(interpreter.processInput());
 	if (keyboard.window == 2)
@@ -159,7 +159,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
         }
         if (keyboard.deleteSelected) {
             for (Integer hash : scene.selected) {
-        	scene.removeObject(hash);
+        	scene.manager.removeObject(hash);
             }
             scene.selected.clear();
             keyboard.deleteSelected = false;

@@ -26,24 +26,4 @@ public class SceneObject {
 	}
 	return data;
     }
-//    public SceneObject make(Point3f location, Point3i color) {
-//	Box box = new Box(2);
-//
-//	float[] vertices, colors;
-//	int[] indices;
-//
-//	SceneObject object = null;
-//
-//	vertices = convertPoint3fArray(box.vertices);
-//	indices = convertPoint3iArray(box.indices);
-//	colors = generateColorData(color, vertices.length);
-//
-//	object = new SceneObject(vertices, indices, colors);
-//	object.id = objectId;
-//	object.point = location;
-//
-//	objectId += 1;
-//	return object;
-//    }
-    
 }
