@@ -34,8 +34,8 @@ public class Renderer extends GLCanvas implements GLEventListener {
 
     // Object related
     Integer lastObject = null;
-    
-    //GUI related
+
+    // GUI related
     GUI gui = new GUI();
 
     // Scene related
@@ -85,7 +85,8 @@ public class Renderer extends GLCanvas implements GLEventListener {
     @Override
     public void display(GLAutoDrawable drawable) {
 	interpreter.consoleInput = keyboard.message;
-	// keyboard.message = "";
+	// Load interpreter manager
+	interpreter.manager = scene.manager;
 	processCommands();
 
 	gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -102,16 +103,15 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	    showViewVolume(-32.0f, 32.0f, -32.0f, 32.0f, -32.0f, 32.0f);
 
 	scene.make(gl, GL_RENDER);
-	scene.manager.objects.addAll(interpreter.objects);	
-	interpreter.objects.clear();
 
 	gui.cameraDistance = cameraDistance;
 	gui.cameraAngleInYZ = cameraAngleInYZ;
 	gui.cameraAngleInXZ = cameraAngleInXZ;
-	
+
 	if (keyboard.window == 0)
-	    gui.showDefault(scene.manager.objects.size(), lastObject, scene.selected);
-	if (keyboard.window == 1) 
+	    gui.showDefault(scene.manager.objects.size(), lastObject,
+		    scene.selected);
+	if (keyboard.window == 1)
 	    gui.showConsole(interpreter.processInput());
 	if (keyboard.window == 2)
 	    gui.showHelp();
@@ -121,49 +121,50 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	    mouse.point = null;
 	}
 	keyboard.message = interpreter.consoleInput;
+	scene.manager = interpreter.manager;
 	gl.glFlush();
     }
 
     void processCommands() {
-        if (keyboard.resetView) {
-            cameraDistance = 128;
-            cameraAngleInXZ = 0;
-            cameraAngleInYZ = 0;
-            cameraAngleInYX = 0;
-            keyboard.resetView = false;
-        }
-        if (keyboard.zoomOut) {
-            cameraDistance += zoomStep;
-        }
-        if (keyboard.zoomIn) {
-            cameraDistance -= zoomStep;
-        }
-        if (keyboard.panLeft) {
-            cameraAngleInXZ -= panStep;
-        }
-        if (keyboard.panRight) {
-            cameraAngleInXZ += panStep;
-        }
-        if (keyboard.panUp) {
-            cameraAngleInYZ -= panStep;
-            cameraAngleInYX -= panStep;
-        }
-        if (keyboard.panDown) {
-            cameraAngleInYZ += panStep;
-            cameraAngleInYX += panStep;
-        }
-    
-        if (keyboard.clearSelection) {
-            scene.selected.clear();
-            keyboard.clearSelection = false;
-        }
-        if (keyboard.deleteSelected) {
-            for (Integer hash : scene.selected) {
-        	scene.manager.removeObject(hash);
-            }
-            scene.selected.clear();
-            keyboard.deleteSelected = false;
-        }
+	if (keyboard.resetView) {
+	    cameraDistance = 128;
+	    cameraAngleInXZ = 0;
+	    cameraAngleInYZ = 0;
+	    cameraAngleInYX = 0;
+	    keyboard.resetView = false;
+	}
+	if (keyboard.zoomOut) {
+	    cameraDistance += zoomStep;
+	}
+	if (keyboard.zoomIn) {
+	    cameraDistance -= zoomStep;
+	}
+	if (keyboard.panLeft) {
+	    cameraAngleInXZ -= panStep;
+	}
+	if (keyboard.panRight) {
+	    cameraAngleInXZ += panStep;
+	}
+	if (keyboard.panUp) {
+	    cameraAngleInYZ -= panStep;
+	    cameraAngleInYX -= panStep;
+	}
+	if (keyboard.panDown) {
+	    cameraAngleInYZ += panStep;
+	    cameraAngleInYX += panStep;
+	}
+
+	if (keyboard.clearSelection) {
+	    scene.selected.clear();
+	    keyboard.clearSelection = false;
+	}
+	if (keyboard.deleteSelected) {
+	    for (Integer hash : scene.selected) {
+		scene.manager.removeObject(hash);
+	    }
+	    scene.selected.clear();
+	    keyboard.deleteSelected = false;
+	}
     }
 
     private void setCamera() {
@@ -181,74 +182,74 @@ public class Renderer extends GLCanvas implements GLEventListener {
     }
 
     public void showViewVolume(float x1, float x2, float y1, float y2,
-            float z1, float z2) {
-        // gl.glTranslatef(20f,0,0);
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
-        gl.glBegin(GL_LINE_LOOP);
-        gl.glVertex3f(x1, y1, -z1);
-        gl.glVertex3f(x2, y1, -z1);
-        gl.glVertex3f(x2, y2, -z1);
-        gl.glVertex3f(x1, y2, -z1);
-        gl.glEnd();
-    
-        gl.glBegin(GL_LINE_LOOP);
-        gl.glVertex3f(x1, y1, -z2);
-        gl.glVertex3f(x2, y1, -z2);
-        gl.glVertex3f(x2, y2, -z2);
-        gl.glVertex3f(x1, y2, -z2);
-        gl.glEnd();
-    
-        gl.glBegin(GL_LINES);
-        gl.glVertex3f(x1, y1, -z1);
-        gl.glVertex3f(x1, y1, -z2);
-        gl.glVertex3f(x1, y2, -z1);
-        gl.glVertex3f(x1, y2, -z2);
-        gl.glVertex3f(x2, y1, -z1);
-        gl.glVertex3f(x2, y1, -z2);
-        gl.glVertex3f(x2, y2, -z1);
-        gl.glVertex3f(x2, y2, -z2);
-        gl.glEnd();
+	    float z1, float z2) {
+	// gl.glTranslatef(20f,0,0);
+	gl.glColor3f(1.0f, 1.0f, 1.0f);
+	gl.glBegin(GL_LINE_LOOP);
+	gl.glVertex3f(x1, y1, -z1);
+	gl.glVertex3f(x2, y1, -z1);
+	gl.glVertex3f(x2, y2, -z1);
+	gl.glVertex3f(x1, y2, -z1);
+	gl.glEnd();
+
+	gl.glBegin(GL_LINE_LOOP);
+	gl.glVertex3f(x1, y1, -z2);
+	gl.glVertex3f(x2, y1, -z2);
+	gl.glVertex3f(x2, y2, -z2);
+	gl.glVertex3f(x1, y2, -z2);
+	gl.glEnd();
+
+	gl.glBegin(GL_LINES);
+	gl.glVertex3f(x1, y1, -z1);
+	gl.glVertex3f(x1, y1, -z2);
+	gl.glVertex3f(x1, y2, -z1);
+	gl.glVertex3f(x1, y2, -z2);
+	gl.glVertex3f(x2, y1, -z1);
+	gl.glVertex3f(x2, y1, -z2);
+	gl.glVertex3f(x2, y2, -z1);
+	gl.glVertex3f(x2, y2, -z2);
+	gl.glEnd();
     }
 
     private void userPickAt(int x, int y) {
-        int[] selectBuf = new int[BUFFER_SIZE];
-        IntBuffer selectBuffer = Buffers.newDirectIntBuffer(BUFFER_SIZE);
-        int hits;
-        int viewport[] = new int[4];
-        gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-    
-        gl.glSelectBuffer(BUFFER_SIZE, selectBuffer);
-        gl.glRenderMode(GL_SELECT);
-    
-        gl.glInitNames();
-        gl.glPushName(0);
-    
-        gl.glMatrixMode(GL_PROJECTION);
-        // gl.glPushMatrix();
-        gl.glLoadIdentity();
-    
-        // 5x5 picking region
-        glu.gluPickMatrix((double) x, (double) (viewport[3] - y), 5.0, 5.0,
-        	viewport, 0);
-        float widthHeightRatio = (float) getWidth() / (float) getHeight();
-        glu.gluPerspective(45, widthHeightRatio, 1, 1000);
-        glu.gluLookAt(0, 0, cameraDistance, 0, 0, 0, 0, 1, 0);
-        gl.glRotatef(cameraAngleInXZ, 0.f, 1.f, 0.f);
-    
-        gl.glRotatef(cameraAngleInYX,
-        	(float) Math.cos(Math.toRadians(cameraAngleInXZ)), 0.f,
-        	(float) Math.sin(Math.toRadians(cameraAngleInXZ)));
-    
-        scene.make(gl, GL_SELECT);
-    
-        // gl.glPopMatrix();
-        gl.glMatrixMode(GL_MODELVIEW);
-        gl.glLoadIdentity();
-        gl.glFlush();
-    
-        hits = gl.glRenderMode(GL_RENDER);
-        selectBuffer.get(selectBuf);
-        processHits(hits, selectBuf);
+	int[] selectBuf = new int[BUFFER_SIZE];
+	IntBuffer selectBuffer = Buffers.newDirectIntBuffer(BUFFER_SIZE);
+	int hits;
+	int viewport[] = new int[4];
+	gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+
+	gl.glSelectBuffer(BUFFER_SIZE, selectBuffer);
+	gl.glRenderMode(GL_SELECT);
+
+	gl.glInitNames();
+	gl.glPushName(0);
+
+	gl.glMatrixMode(GL_PROJECTION);
+	// gl.glPushMatrix();
+	gl.glLoadIdentity();
+
+	// 5x5 picking region
+	glu.gluPickMatrix((double) x, (double) (viewport[3] - y), 5.0, 5.0,
+		viewport, 0);
+	float widthHeightRatio = (float) getWidth() / (float) getHeight();
+	glu.gluPerspective(45, widthHeightRatio, 1, 1000);
+	glu.gluLookAt(0, 0, cameraDistance, 0, 0, 0, 0, 1, 0);
+	gl.glRotatef(cameraAngleInXZ, 0.f, 1.f, 0.f);
+
+	gl.glRotatef(cameraAngleInYX,
+		(float) Math.cos(Math.toRadians(cameraAngleInXZ)), 0.f,
+		(float) Math.sin(Math.toRadians(cameraAngleInXZ)));
+
+	scene.make(gl, GL_SELECT);
+
+	// gl.glPopMatrix();
+	gl.glMatrixMode(GL_MODELVIEW);
+	gl.glLoadIdentity();
+	gl.glFlush();
+
+	hits = gl.glRenderMode(GL_RENDER);
+	selectBuffer.get(selectBuf);
+	processHits(hits, selectBuf);
     }
 
     private void processHits(int hits, int buffer[]) {

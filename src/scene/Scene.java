@@ -19,8 +19,8 @@ import static javax.media.opengl.GL2.*;
 public class Scene {
     public GL2 gl;
 
-    public SceneObjectManager manager = new SceneObjectManager();
     public ArrayList<Integer> selected = new ArrayList<Integer>();
+    public SceneObjectManager manager = new SceneObjectManager();
 
     public Scene() {
 	manager.addObject(new Point3f(0, 0, 0), new Point3i(0, 0, 255));
@@ -33,7 +33,6 @@ public class Scene {
 		    random.nextInt(32) - 16, random.nextInt(32) - 16),
 		    new Point3i(0, 255, 0));
 	}
-
 	// Add a cluster of objects 
 	manager.addObject(new Point3f(0, 0, 0), new Point3i(0, 0, 255));
 	for (int i = 1; i < 5; i++)
@@ -49,19 +48,18 @@ public class Scene {
 	for (int i = 1; i < 5; i++)
 	    manager.addObject(new Point3f(0, 0, -4.f * i), new Point3i(255, i * 40, 0));
     }
-
     private void setText(String string) {
         GLUT glut = new GLUT();
         gl.glColor3f(1f, 0, 0);
         gl.glRasterPos3f(2, 2, 0);
         glut.glutBitmapString(GLUT.BITMAP_HELVETICA_10, string);
     }
-
     public void make(GL2 gl, int mode) {
 	gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 	gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
 
 	// gl.glLoadIdentity();
+	String string = new String ();
 	for (SceneObject object : manager.objects) {
 	    int hash = object.hashCode();
 	    if (mode == GL_SELECT)
@@ -75,7 +73,7 @@ public class Scene {
 		//Selected object color
 		colors = flushColor(new Point3i(255, 255, 255),
 			object.vertices.length * 3);
-		String string = Integer.toString(object.id) + " "
+		string = Integer.toString(object.id) + " "
 			+ Arrays.asList(object.point);
 
 		setText(string);
@@ -98,7 +96,6 @@ public class Scene {
 	gl.glDrawElements(GL.GL_TRIANGLES, 36, GL.GL_UNSIGNED_INT,
 		indicesIntBuffer);
     }
-
     public float[] flushColor(Point3i color, int length) {
 	float[] data = new float[length];
 	for (int i = 0; i < length; i = i + 3) {
