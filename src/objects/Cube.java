@@ -8,6 +8,7 @@ import javax.vecmath.Point3i;
 public class Cube {
     public ArrayList<Point3f> vertices = new ArrayList<Point3f>();
     public ArrayList<Point3i> indices = new ArrayList<Point3i>();
+    public ArrayList<Point3f> normals = new ArrayList<Point3f>();
     
     public Cube(float a) {
 	a = a / 2;
