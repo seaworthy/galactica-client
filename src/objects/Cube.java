@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point3i;
 
-public class Box {
+public class Cube {
     public ArrayList<Point3f> vertices = new ArrayList<Point3f>();
     public ArrayList<Point3i> indices = new ArrayList<Point3i>();
     
-    public Box(float a) {
+    public Cube(float a) {
 	a = a / 2;
 	vertices.add(new Point3f (-a, a, -a));//A0
 	vertices.add(new Point3f (a, a, -a));//A1

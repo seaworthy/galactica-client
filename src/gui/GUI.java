@@ -15,7 +15,6 @@ public class GUI {
     public GUI() {
 
     }
-
     public void showDefault(int objectCount, Integer lastObject,
 	    ArrayList<Integer> selected) {
 	gl.glColor3f(0, 1f, 0);
@@ -33,7 +32,6 @@ public class GUI {
 	setText("Pan Angle (Altitude): " + Float.toString(cameraAngleInYZ),
 		-5.f, -3.0f);
     }
-
     public void showConsole(String lines[]) {
 	gl.glColor3f(0, 1f, 0);
 	int start, end;
@@ -48,7 +46,6 @@ public class GUI {
 	    j += 1;
 	}
     }
-
     public void showHelp() {
 	ArrayList<String> shortcuts = new ArrayList<String>();
 	shortcuts.add("ESC - key shorcuts");
@@ -60,6 +57,7 @@ public class GUI {
 	shortcuts.add("UP - pan camera up");
 	shortcuts.add("DOWN - pan camera down");
 	shortcuts.add("0 - reset camera view");
+	shortcuts.add("r - reset scene");
 	shortcuts.add("- - toggle view volume");
 	shortcuts.add("DEL - delete selected object");
 
@@ -74,7 +72,9 @@ public class GUI {
 	    i += 1;
 	}
     }
-
+    public void showFPS(String fps) {
+	setText (fps, 4.f,3.f);
+    }
     private void setText(String string, float x, float y) {
 	gl.glLoadIdentity();
 	GLUT glut = new GLUT();

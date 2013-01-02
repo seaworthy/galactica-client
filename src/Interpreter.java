@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+import javax.media.nativewindow.util.Point;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point3i;
 
@@ -11,6 +12,7 @@ public class Interpreter {
     public String consoleInput = new String();
     public String[] lines = null;
 
+    public Point mouse = null;
     public Interpreter() {
 
     }
@@ -75,7 +77,6 @@ public class Interpreter {
 	if (lines[lines.length - 2].matches("> change ([0-9]+) ([0-9]+),([0-9]+),([0-9]+)")
 		&& lines[lines.length - 1].equals("> ")) {
 	    changeColor(lines[lines.length - 2].split("\\s+"));
-	    //removeObject(lines[lines.length - 2].split("\\s+"));
 	    consoleInput += "	ok\n";
 	    consoleInput += "> ";
 	}
@@ -88,7 +89,7 @@ public class Interpreter {
 	Point3i color = new Point3i(Integer.parseInt(arg2[0]),
 		Integer.parseInt(arg2[1]), Integer.parseInt(arg2[2]));
 
-	manager.addObject(origin, color);
+	manager.addCube(origin, color);
     }
     public void removeObject(String[] args) {
 	manager.removeObject(Integer.parseInt(args[2]));

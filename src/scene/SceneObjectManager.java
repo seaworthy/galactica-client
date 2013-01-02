@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point3i;
 
-import objects.Box;
+import objects.Cube;
+import objects.Sphere;
 
 public class SceneObjectManager {
     public int objectId = 0;
@@ -14,13 +15,28 @@ public class SceneObjectManager {
     public SceneObjectManager() {
 
     }
-    public void addObject(Point3f location, Point3i color) {
-	Box box = new Box(2);
+    public void addCube(Point3f location, Point3i color) {
+	Cube box = new Cube(2);
 	
 	SceneObject object = null;
 
 	float[] vertices = convertPoint3fArray(box.vertices);
 	int[] indices = convertPoint3iArray(box.indices);
+
+	object = new SceneObject(vertices, indices, color);
+	object.id = objectId;
+	object.point = location;
+
+	objectId += 1;
+	objects.add(object);
+    }
+    public void addSphere(Point3f location, Point3i color) {
+	Sphere sphere = new Sphere(2);
+	
+	SceneObject object = null;
+
+	float[] vertices = convertPoint3fArray(sphere.vertices);
+	int[] indices = convertPoint3iArray(sphere.indices);
 
 	object = new SceneObject(vertices, indices, color);
 	object.id = objectId;

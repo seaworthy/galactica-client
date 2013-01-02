@@ -5,6 +5,7 @@ public class Keyboard implements KeyListener {
     public String message = "> ";
     // Scene actions
     public boolean showViewVolume = false;
+    public boolean resetScene = false;
 
     // Object actions
     public boolean clearSelection = false;
@@ -62,6 +63,11 @@ public class Keyboard implements KeyListener {
 	    if (e.getKeyCode() == 48) { // 0
 		clearSelection = true;
 		message += "Selection cleared\n";
+		message += "> ";
+	    }
+	    if (e.getKeyCode() == 82) { // R
+		resetScene = true;
+		message += "Scene reset\n";
 		message += "> ";
 	    }
 	    if (e.getKeyCode() == 37) { // Left
