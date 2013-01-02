@@ -57,7 +57,9 @@ public class GUI {
 	shortcuts.add("UP - pan camera up");
 	shortcuts.add("DOWN - pan camera down");
 	shortcuts.add("0 - reset camera view");
-	shortcuts.add("r - reset scene");
+	shortcuts.add("R - reset scene");
+	shortcuts.add("M - toggle object motion");
+	shortcuts.add("L - randomize scene");
 	shortcuts.add("- - toggle view volume");
 	shortcuts.add("DEL - delete selected object");
 

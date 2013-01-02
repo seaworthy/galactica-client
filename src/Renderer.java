@@ -51,6 +51,9 @@ public class Renderer extends GLCanvas implements GLEventListener {
     float cameraAngleInYX = 0;
     float panStep = 1;
 
+    // Movement
+    float step = 0.1f;
+
     // Mouse
     Point3f click = new Point3f(0, 0, 0);
     // Memory
@@ -95,7 +98,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable drawable) {
-	fps.startCounter();  
+	fps.startCounter();
 	interpreter.consoleInput = keyboard.message;
 	// Load interpreter manager
 	interpreter.manager = scene.manager;
@@ -120,6 +123,9 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	gl.glVertex3f(click.x, click.y, click.z);
 	gl.glEnd();
 
+	if (keyboard.enableMotion) {
+	    scene.calculatePositions(step);
+	}
 	scene.make(gl, GL_RENDER);
 
 	gui.cameraDistance = cameraDistance;
@@ -150,7 +156,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	// scene.manager.addSphere(location, color);
 
 	gl.glFlush();
-	fps.postCounter(); 
+	fps.postCounter();
     }
 
     void processCommands() {
@@ -195,9 +201,13 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	}
 	if (keyboard.resetScene) {
 	    scene.manager.objects.clear();
-	    scene.manager.addCube(new Point3f(0, 0, 0), new Point3i(0, 0, 255));
 	    keyboard.resetScene = false;
 	}
+	if (keyboard.loadScene) {
+	    scene.manager.loadMap();
+	    keyboard.loadScene = false;
+	}
+
     }
 
     private void setCamera() {
@@ -265,7 +275,6 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	// Point3i(255, 0, 0));
 	// scene.manager.addSphere(new Point3f((x-400)/32, (300-y)/32, 32.f),
 	// new Point3i(255, 0, 0));
-
 	Point3f point = new Point3f(x, y, z);
 	return point;
     }

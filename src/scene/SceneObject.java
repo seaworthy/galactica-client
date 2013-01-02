@@ -6,11 +6,17 @@ import javax.vecmath.Point3i;
 public class SceneObject {
     public int id;
     
-    public Point3f point = new Point3f ();
+    public Point3f start = new Point3f ();
+    public Point3f end = new Point3f ();
     
     public float[] vertices;
     public int[] indices;
-    public float[] colors;    
+    public float[] colors;
+    
+    //http://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
+    public enum Shape {
+	    CUBE, SPHERE
+	}
     
     public SceneObject(float[] arg0, int[] arg1, Point3i arg2) {
 	vertices = arg0;

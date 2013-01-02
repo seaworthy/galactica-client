@@ -2,6 +2,8 @@ package scene;
 
 import java.util.ArrayList;
 
+import java.util.Random;
+
 import javax.vecmath.Point3f;
 import javax.vecmath.Point3i;
 
@@ -15,9 +17,36 @@ public class SceneObjectManager {
     public SceneObjectManager() {
 
     }
+
+    public void loadMap() {
+	// Add 5 random objects to scene
+	Random random;
+
+	for (int i = 0; i < 5; i++) {
+	    random = new Random();
+	    addCube(new Point3f(random.nextInt(64) - 32,
+		    random.nextInt(64) - 32, random.nextInt(64) - 32),
+		    new Point3i(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+	}
+	// Add a cluster of objects
+	addCube(new Point3f(0, 0, 0), new Point3i(0, 0, 255));
+	for (int i = 1; i < 5; i++)
+	    addCube(new Point3f(4.f * i, 0, 0), new Point3i(255, 0, 0));
+	for (int i = 1; i < 5; i++)
+	    addCube(new Point3f(-4.f * i, 0, 0), new Point3i(255, i * 40, 0));
+	for (int i = 1; i < 5; i++)
+	    addCube(new Point3f(0, 4.f * i, 0), new Point3i(0, 255, 0));
+	for (int i = 1; i < 5; i++)
+	    addCube(new Point3f(0, -4.f * i, 0), new Point3i(255, i * 40, 0));
+	for (int i = 1; i < 5; i++)
+	    addCube(new Point3f(0, 0, 4.f * i), new Point3i(0, 0, 255));
+	for (int i = 1; i < 5; i++)
+	    addCube(new Point3f(0, 0, -4.f * i), new Point3i(255, i * 40, 0));
+    }
+
     public void addCube(Point3f location, Point3i color) {
 	Cube box = new Cube(2);
-	
+
 	SceneObject object = null;
 
 	float[] vertices = convertPoint3fArray(box.vertices);
@@ -25,14 +54,15 @@ public class SceneObjectManager {
 
 	object = new SceneObject(vertices, indices, color);
 	object.id = objectId;
-	object.point = location;
+	object.start = location;
+	object.end = location;
 
 	objectId += 1;
 	objects.add(object);
     }
     public void addSphere(Point3f location, Point3i color) {
 	Sphere sphere = new Sphere(2);
-	
+
 	SceneObject object = null;
 
 	float[] vertices = convertPoint3fArray(sphere.vertices);
@@ -40,7 +70,9 @@ public class SceneObjectManager {
 
 	object = new SceneObject(vertices, indices, color);
 	object.id = objectId;
-	object.point = location;
+	object.start = location;
+	// object.end = location;
+	object.end = new Point3f(0, 0, 0);
 
 	objectId += 1;
 	objects.add(object);
@@ -49,7 +81,7 @@ public class SceneObjectManager {
 	int index = getIndex(hash);
 	objects.remove(index);
     }
-    public void changeObjectColor(int hash, Point3i color) {	
+    public void changeObjectColor(int hash, Point3i color) {
 	int index = getIndex(hash);
 	objects.get(index).flushColor(color);
     }

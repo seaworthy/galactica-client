@@ -4,7 +4,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -24,33 +23,6 @@ public class Scene {
 
     public Scene() {
 	manager.addCube(new Point3f(0, 0, 0), new Point3i(0, 0, 255));
-//	// Add 5 random objects to scene
-//	Random random;
-//
-//	for (int i = 0; i < 5; i++) {
-//	    random = new Random();
-//	    manager.addCube(
-//		    new Point3f(random.nextInt(32) - 16,
-//			    random.nextInt(32) - 16, random.nextInt(32) - 16),
-//		    new Point3i(0, 255, 0));
-//	}
-//	// Add a cluster of objects
-//	manager.addCube(new Point3f(0, 0, 0), new Point3i(0, 0, 255));
-//	for (int i = 1; i < 5; i++)
-//	    manager.addCube(new Point3f(4.f * i, 0, 0), new Point3i(255, 0, 0));
-//	for (int i = 1; i < 5; i++)
-//	    manager.addCube(new Point3f(-4.f * i, 0, 0), new Point3i(255,
-//		    i * 40, 0));
-//	for (int i = 1; i < 5; i++)
-//	    manager.addCube(new Point3f(0, 4.f * i, 0), new Point3i(0, 255, 0));
-//	for (int i = 1; i < 5; i++)
-//	    manager.addCube(new Point3f(0, -4.f * i, 0), new Point3i(255,
-//		    i * 40, 0));
-//	for (int i = 1; i < 5; i++)
-//	    manager.addCube(new Point3f(0, 0, 4.f * i), new Point3i(0, 0, 255));
-//	for (int i = 1; i < 5; i++)
-//	    manager.addCube(new Point3f(0, 0, -4.f * i), new Point3i(255,
-//		    i * 40, 0));
     }
 
     private void setText(String string) {
@@ -61,7 +33,7 @@ public class Scene {
     }
 
     public void make(GL2 gl, int mode) {
-	
+
 	gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 	gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
 
@@ -73,7 +45,7 @@ public class Scene {
 		gl.glLoadName(hash);
 
 	    // gl.glLoadIdentity();
-	    gl.glTranslatef(object.point.x, object.point.y, object.point.z);
+	    gl.glTranslatef(object.start.x, object.start.y, object.start.z);
 	    // Base object color
 	    float[] colors = object.colors;
 	    if (selected.contains(hash)) {
@@ -81,16 +53,62 @@ public class Scene {
 		colors = flushColor(new Point3i(255, 255, 255),
 			object.vertices.length * 3);
 		string = Integer.toString(object.id) + " "
-			+ Arrays.asList(object.point);
+			+ Arrays.asList(object.start);
 
 		setText(string);
 	    }
 	    renderObject(object.vertices, object.indices, colors);
-	    gl.glTranslatef(-object.point.x, -object.point.y, -object.point.z);
+	    gl.glTranslatef(-object.start.x, -object.start.y, -object.start.z);
 
 	}
 	gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
 	gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+    }
+
+    public void calculatePositions(float step) {
+	//* TODO Round start/end location to avoid unneccesary position calculations
+	Point3f totalDisplacement = new Point3f();
+	Point3f stepDisplacement = new Point3f();
+	float distance, length;
+	for (SceneObject object : manager.objects) {
+	    if (object.start != object.end) {
+		totalDisplacement.x = Math.abs(object.end.x - object.start.x);
+		totalDisplacement.y = Math.abs(object.end.y - object.start.y);
+		totalDisplacement.z = Math.abs(object.end.z - object.start.z);
+
+		distance = (float) Math.sqrt(Math.pow(totalDisplacement.x, 2)
+			+ Math.pow(totalDisplacement.y, 2)
+			+ Math.pow(totalDisplacement.z, 2));
+
+		length = distance / step;
+
+		stepDisplacement = new Point3f(totalDisplacement.x / length,
+			totalDisplacement.y / length, totalDisplacement.z
+				/ length);
+		System.out.println(totalDisplacement);
+		// To smooth out movement the program has to figure out how to
+		// divide displacements in x,y,z into equal segments
+		// Find minimum of 3 and divide by step to get number of
+		// intervals
+		// Find distance from start to end and divide by step
+
+		// Calculate step in x, and adjust start location
+		if (object.start.x > object.end.x)
+		    object.start.x -= stepDisplacement.x;
+		else if (object.start.x < object.end.x)
+		    object.start.x += stepDisplacement.x;
+		// Calculate step in y, and adjust start location
+		if (object.start.y > object.end.y)
+		    object.start.y -= stepDisplacement.y;
+		else if (object.start.y < object.end.y)
+		    object.start.y += stepDisplacement.y;
+		// Calculate step in z, and adjust start location
+		if (object.start.z > object.end.z)
+		    object.start.z -= stepDisplacement.z;
+		else if (object.start.z < object.end.z)
+		    object.start.z += stepDisplacement.z;
+	    }
+	}
     }
 
     public void renderObject(float[] points, int[] indices, float[] colors) {
@@ -101,7 +119,7 @@ public class Scene {
 	// gl.glEnableClientState( GL.GL_NORMAL_ARRAY );
 	gl.glVertexPointer(3, GL.GL_FLOAT, 0, pointsFloatBuffer);
 	gl.glColorPointer(3, GL.GL_FLOAT, 0, colorsFloatBuffer);
-	//System.out.println(indices.length);
+	// System.out.println(indices.length);
 	gl.glDrawElements(GL.GL_TRIANGLES, indices.length, GL.GL_UNSIGNED_INT,
 		indicesIntBuffer);
     }
