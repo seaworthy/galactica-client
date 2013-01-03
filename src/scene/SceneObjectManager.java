@@ -45,18 +45,22 @@ public class SceneObjectManager {
     }
 
     public void addCube(Point3f location, Point3i color) {
-	Cube box = new Cube(2);
+	Cube cube = new Cube(2);
 
 	SceneObject object = null;
 
-	float[] vertices = convertPoint3fArray(box.vertices);
-	int[] indices = convertPoint3iArray(box.indices);
+	float[] vertices = unpackPoint3fList(cube.vertices);
+	int[] indices = unpackPoint3iList(cube.indices);
+	float[] normals = unpackPoint3fList(cube.normals);
 
-	object = new SceneObject(vertices, indices, color);
+	object = new SceneObject(vertices, indices, normals, color);
 	object.id = objectId;
 	object.start = location;
 	object.end = location;
 
+	//* TODO NORMALS TEST
+	//object.normals = cube.normals;
+	
 	objectId += 1;
 	objects.add(object);
     }
@@ -65,15 +69,19 @@ public class SceneObjectManager {
 
 	SceneObject object = null;
 
-	float[] vertices = convertPoint3fArray(sphere.vertices);
-	int[] indices = convertPoint3iArray(sphere.indices);
+	float[] vertices = unpackPoint3fList(sphere.vertices);
+	int[] indices = unpackPoint3iList(sphere.indices);
+	float[] normals = new float[0];
 
-	object = new SceneObject(vertices, indices, color);
+	object = new SceneObject(vertices, indices, normals, color);
 	object.id = objectId;
 	object.start = location;
 	// object.end = location;
 	object.end = new Point3f(0, 0, 0);
 
+	//* TODO NORMALS TEST
+	//object.normals = sphere.normals;
+	
 	objectId += 1;
 	objects.add(object);
     }
@@ -94,24 +102,24 @@ public class SceneObjectManager {
 	}
 	return index;
     }
-    public float[] convertPoint3fArray(ArrayList<Point3f> vertices) {
-	float[] data = new float[vertices.size() * 3];
+    public float[] unpackPoint3fList(ArrayList<Point3f> list) {
+	float[] data = new float[list.size() * 3];
 	int i = 0;
-	for (Point3f vertex : vertices) {
-	    data[i] = vertex.x;
-	    data[i + 1] = vertex.y;
-	    data[i + 2] = vertex.z;
+	for (Point3f element : list) {
+	    data[i] = element.x;
+	    data[i + 1] = element.y;
+	    data[i + 2] = element.z;
 	    i += 3;
 	}
 	return data;
     }
-    public int[] convertPoint3iArray(ArrayList<Point3i> indices) {
-	int[] data = new int[indices.size() * 3];
+    public int[] unpackPoint3iList(ArrayList<Point3i> list) {
+	int[] data = new int[list.size() * 3];
 	int i = 0;
-	for (Point3i index : indices) {
-	    data[i] = index.x;
-	    data[i + 1] = index.y;
-	    data[i + 2] = index.z;
+	for (Point3i element : list) {
+	    data[i] = element.x;
+	    data[i + 1] = element.y;
+	    data[i + 2] = element.z;
 	    i += 3;
 	}
 	return data;

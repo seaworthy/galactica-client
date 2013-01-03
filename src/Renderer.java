@@ -12,7 +12,7 @@ import javax.media.opengl.glu.GLU;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point3i;
 
-import scene.FPScounter;
+import scene.FPSCounter;
 import scene.Scene;
 
 import com.jogamp.common.nio.Buffers;
@@ -60,7 +60,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
     private static final int BUFFER_SIZE = 512;
 
     // System
-    FPScounter fps = new FPScounter();
+    FPSCounter fps = new FPSCounter();
 
     public Renderer() {
 	this.addGLEventListener(this);
@@ -94,6 +94,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	// gl.glEnable(GL_DEPTH_TEST);
 	// gl.glShadeModel(GL_FLAT);
 	// gl.glDepthRange(0.0, 1.0); /* The default z mapping */
+
     }
 
     @Override
@@ -106,6 +107,8 @@ public class Renderer extends GLCanvas implements GLEventListener {
 
 	gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	
+	setLight();
 	setCamera();
 
 	gl.glRotatef(cameraAngleInXZ, 0.f, 1.f, 0.f);
@@ -126,6 +129,7 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	if (keyboard.enableMotion) {
 	    scene.calculatePositions(step);
 	}
+
 	scene.make(gl, GL_RENDER);
 
 	gui.cameraDistance = cameraDistance;
@@ -224,6 +228,20 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	gl.glLoadIdentity();
     }
 
+    private void setLight() {
+	float[] lightAmbient = new float[] { 0.f, 0.f, 0.f, 1.f };
+	float[] lightDiffuse = new float[] { 1.f, 1.f, 1.f, 1.f };
+	float[] lightSpecular = new float[] { 0.f,0.f, 0.f, 1.f };
+	float[] lightPosition = new float[] {0.f,0.f,cameraDistance, 0.f};
+	
+	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmbient,0);
+	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDiffuse,0);
+	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightSpecular,0);
+	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPosition,0);
+	
+	gl.glLightf(GL2.GL_LIGHT0, GL2.GL_SPOT_CUTOFF, 15.f);	
+    }
+
     public void showViewVolume(float x1, float x2, float y1, float y2,
 	    float z1, float z2) {
 	// gl.glTranslatef(20f,0,0);
@@ -269,8 +287,8 @@ public class Renderer extends GLCanvas implements GLEventListener {
 	y = (getHeight() / 2 - mouse.getY()) / 5f;
 	z = -32.f;
 
-	scene.manager.addSphere(new Point3f(x, y, -32.f),
-		new Point3i(255, 0, 0));
+	// scene.manager.addSphere(new Point3f(x, y, -32.f),
+	// new Point3i(255, 0, 0));
 	// scene.manager.addSphere(new Point3f((x-400)/0.1, (300-y)/0.1, 0), new
 	// Point3i(255, 0, 0));
 	// scene.manager.addSphere(new Point3f((x-400)/32, (300-y)/32, 32.f),

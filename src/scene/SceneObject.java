@@ -12,16 +12,18 @@ public class SceneObject {
     public float[] vertices;
     public int[] indices;
     public float[] colors;
-    
+    public float[] normals;
+        
     //http://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
     public enum Shape {
 	    CUBE, SPHERE
 	}
     
-    public SceneObject(float[] arg0, int[] arg1, Point3i arg2) {
+    public SceneObject(float[] arg0, int[] arg1, float[] arg2, Point3i arg3) {
 	vertices = arg0;
 	indices = arg1;
-	flushColor(arg2);
+	normals = arg2;
+	flushColor(arg3);
     }
     public void flushColor(Point3i color) {
 	int length = vertices.length;

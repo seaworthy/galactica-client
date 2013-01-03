@@ -1,6 +1,6 @@
 package scene;
 
-public class FPScounter {
+public class FPSCounter {
     private int startTime;
     private int endTime;
     private int frameTimes = 0;

@@ -13,6 +13,7 @@ import javax.vecmath.Point3i;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.util.gl2.GLUT;
 
+import static javax.media.opengl.GL.GL_LINES;
 import static javax.media.opengl.GL2.*;
 
 public class Scene {
@@ -35,6 +36,7 @@ public class Scene {
     public void make(GL2 gl, int mode) {
 
 	gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+	gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 	gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
 
 	// gl.glLoadIdentity();
@@ -46,8 +48,19 @@ public class Scene {
 
 	    // gl.glLoadIdentity();
 	    gl.glTranslatef(object.start.x, object.start.y, object.start.z);
+	    // TODO Normals test
+	    // gl.glColor3f(1.f, 1.f, 0);
+	    // for (Point3f normal : object.normals) {
+	    // gl.glBegin(GL_LINES);
+	    // gl.glVertex3f(0.f, 0.f, 0.f);
+	    // gl.glVertex3f(2*normal.x, 2*normal.y, 2*normal.z);
+	    // gl.glEnd();
+	    // }
+
 	    // Base object color
+
 	    float[] colors = object.colors;
+	    float[] normals = object.normals;
 	    if (selected.contains(hash)) {
 		// Selected object color
 		colors = flushColor(new Point3i(255, 255, 255),
@@ -57,16 +70,32 @@ public class Scene {
 
 		setText(string);
 	    }
-	    renderObject(object.vertices, object.indices, colors);
+
+	    gl.glEnable(GL_LIGHTING);
+	    gl.glEnable(GL2.GL_LIGHT0);
+
+	    gl.glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,0); 
+	    gl.glEnable(GL_COLOR_MATERIAL);
+	    gl.glColorMaterial(GL_FRONT,GL_DIFFUSE);
+	    
+	    float[] black = new float[] {0,0,0,0};
+	    gl.glMaterialfv(GL_FRONT,GL_AMBIENT,black,0);
+	    gl.glMaterialfv(GL_FRONT,GL_SPECULAR,black,0);
+	    
+	    renderObject(object.vertices, object.indices, colors, normals);
 	    gl.glTranslatef(-object.start.x, -object.start.y, -object.start.z);
+	    gl.glDisable(GL_LIGHTING);
 
 	}
+
 	gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+	gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
 	gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
     }
 
     public void calculatePositions(float step) {
-	//* TODO Round start/end location to avoid unneccesary position calculations
+	// * TODO Round start/end location to avoid unneccesary position
+	// calculations
 	Point3f totalDisplacement = new Point3f();
 	Point3f stepDisplacement = new Point3f();
 	float distance, length;
@@ -111,13 +140,16 @@ public class Scene {
 	}
     }
 
-    public void renderObject(float[] points, int[] indices, float[] colors) {
+    public void renderObject(float[] points, int[] indices, float[] colors,
+	    float[] normals) {
 	FloatBuffer pointsFloatBuffer = Buffers.newDirectFloatBuffer(points);
 	IntBuffer indicesIntBuffer = Buffers.newDirectIntBuffer(indices);
 	FloatBuffer colorsFloatBuffer = Buffers.newDirectFloatBuffer(colors);
+	FloatBuffer normalsFloatBuffer = Buffers.newDirectFloatBuffer(normals);
 
 	// gl.glEnableClientState( GL.GL_NORMAL_ARRAY );
 	gl.glVertexPointer(3, GL.GL_FLOAT, 0, pointsFloatBuffer);
+	gl.glNormalPointer(GL.GL_FLOAT, normals.length, normalsFloatBuffer);
 	gl.glColorPointer(3, GL.GL_FLOAT, 0, colorsFloatBuffer);
 	// System.out.println(indices.length);
 	gl.glDrawElements(GL.GL_TRIANGLES, indices.length, GL.GL_UNSIGNED_INT,
